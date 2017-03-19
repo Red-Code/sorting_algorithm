@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
     public static void main(String[] args) {
@@ -23,18 +22,15 @@ public class Main {
 
         //快速排序
         int[] param_quickSort= {6,2,8,5,324,23423,56,2,87,3,42,436};
-        sorting_util.quickSort(param_bubbleSort);
-        printResult("冒泡排序：",param_bubbleSort);
-
-        HashMap<String,String> hashMap = new HashMap();
-        Set<Map.Entry<String, String>> demo = hashMap.entrySet();
-        for (Map.Entry<String, String> dd:demo){
-            dd.getKey();
-        }
-
-        Set<Object> set = Collections.synchronizedSet(new HashSet<>());
+        sorting_util.quickSort(param_quickSort,0,param_quickSort.length-1);
+        printResult("快速排序：",param_quickSort);
     }
 
+    /**
+     * 将排序结果展示出来
+     * @param sort_type 用来描述排序方法
+     * @param array_result 排序结果数组
+     */
     public static void printResult(String sort_type,int[] array_result){
         System.out.print(sort_type);
         for (int i:array_result){
