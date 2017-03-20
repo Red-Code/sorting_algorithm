@@ -109,13 +109,31 @@ public class Sorting {
 
     /**
      * 名称：选择排序-直接选择排序
-     * 描述：
+     * 描述：先从头到尾扫一遍，找到最小的数，和第一个交换，然后从第二个开始找，找到最小的，和第二个位置交换·····
      * 时间复杂度：平均O(n^2)，最坏O(n^2)
      * 稳定性：稳定
      * @param array 待排数组
      */
     public void selectionSort(int[] array){
-
+        int len=array.length;
+        int small;//一次比较中最小的下标。
+        int temp;
+        for(int i=0;i<len-1;i++){//初始从第0位开始找，此位放最小的数，之后第1位放第二小的数·····
+            small=i;//该此比较中最小的下标
+            for(int j=i+1;j<len;j++){//把假定最小下标后的下标的值与该值循环比较，每次都将更小的下标赋给small，一轮下来，small里就是真正的最小下标
+                if(array[j]<array[small]){//如果找到比“最小下标”小的值，则将该下标改成最小下标
+                    small=j;
+                }
+            }
+            if(i!=small){//查询一轮下来，判断small是否变更，如果没变就表示目前i位就是最小的，不用换位。否则换位
+                temp=array[small];//将目前找到的最小元素临时装到temp中
+                //此处没有直接将i位于small位交换是因为直接交换可能会导致相同的数据元素位置发生变化，引起排序不稳定。
+                for(int k=small;k>i;k--){//将第i位至第samll-1位的元素集体向后移一位（这样就刚好把第samll位盖住了，顺序也不会发生改变，也保证了稳定性）
+                    array[k]=array[k-1];
+                }
+                array[i]=temp;//将目前最小值赋值给第i位
+            }
+        }
     }
 
     /**
@@ -140,9 +158,6 @@ public class Sorting {
 
     }
 
-    /**
-     * 基数排序
-     */
     /**
      * 名称：基数排序
      * 描述：

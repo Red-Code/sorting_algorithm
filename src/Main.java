@@ -24,6 +24,11 @@ public class Main {
         int[] param_quickSort= {6,2,8,5,324,23423,56,2,87,3,42,436};
         sorting_util.quickSort(param_quickSort,0,param_quickSort.length-1);
         printResult("快速排序：",param_quickSort);
+
+        //直接选择排序
+        int[] param_selectionSort= {6,2,8,5,324,23423,56,2,87,3,42,436};
+        sorting_util.selectionSort(param_selectionSort);
+        printResult("直接选择排序：",param_selectionSort);
     }
 
     /**
