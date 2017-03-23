@@ -1,5 +1,8 @@
-import java.util.*;
+package pers.cly.sorting;
 
+/**
+ * 运行测试各种排序方法
+ */
 public class Main {
     public static void main(String[] args) {
         Sorting sorting_util = new Sorting();
@@ -34,6 +37,11 @@ public class Main {
         int[] param_heapSort= {6,2,8,5,324,23423,56,2,87,3,42,436};
         sorting_util.heapSort(param_heapSort);
         printResult("选择排序-堆排序：",param_heapSort);
+
+        //归并排序
+        int[] param_mergingSort= {6,2,8,5,324,23423,56,2,87,3,42,436};
+        sorting_util.mergingSort(param_mergingSort, 0, param_mergingSort.length-1);
+        printResult("归并排序：",param_mergingSort);
     }
 
     /**

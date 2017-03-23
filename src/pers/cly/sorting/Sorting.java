@@ -1,6 +1,10 @@
 /**
  * Created by CLY on 2017/3/17.
  */
+package pers.cly.sorting;
+/**
+ * 排序工具类，里面包含各种排序方法
+ */
 public class Sorting {
     /**
      * 名称：插入排序-直接插入排序
@@ -190,13 +194,62 @@ public class Sorting {
 
     /**
      * 名称：归并排序
-     * 描述：
+     * 描述：假设初始序列含有n个元素，则可看成序列含有n个子序列，每个子序列长度为1，
+     *      然后两两合并并排序，得到（n/2）个长度为2（或者最后一个长度可能为1）的有序子序列。
+     *      再两两合并并排序·····，如此重复直到得到一个长度为n的有序序列为止。
      * 时间复杂度：平均O(nlogn)，最坏O(nlogn)
      * 稳定性：稳定
      * @param array 待排数组
+     * @param left
+     * @param right
      */
-    public void mergingSort(int[] array){
+    public void mergingSort(int[] array, int left, int right){
+        if (left >= right)
+            return;
 
+        //第一次，将整个数组传入，以中间位为界，第一个mergingSort()用来“划分”并排序中间位左边，第二个mergingSort()用来“划分”并排序中间位右边
+        //其中间位的左边序列又会重复这个过程，即先划分出其中的左右序列，然后它的左右序列又划分自己的左右序列·····（中间位右边序列同理）
+        //一直划分到左边为“left至left+1”，右边为“left+1只left+1”（如被划分的最小序列：左边是“0,1”，右边是“1”,又或者：左边是“3,4”，右边是“4”）
+        int center = (left + right)/2;//找到序列的中间位置
+        System.out.println("左当前left："+left+",左当前right:"+right);
+        mergingSort(array, left, center);//以center为界，将left
+        int aa = center + 1;
+        System.out.println("右当前left："+aa+",右当前right:"+right);
+        mergingSort(array, center + 1, right);
+        merge(array, left, center, right);
+    }
+    /**
+     *
+     * @param array 待排数组
+     * @param left
+     * @param center
+     * @param right
+     */
+    private void merge(int[] array, int left, int center, int right) {
+        int[] tmpArr = new int[right+1];//临时数组,长度为为“0至需要排序的字段”的长度
+        int mid = center + 1;
+        int index = left; // index记录临时数组的索引
+        int tmp = left;//排序的起始位置
+
+        // 从两个数组中取出最小的放入临时数组
+        while (left <= center && mid <= right) {//“以待排数组的中间位置为界”，两边的待排数组如果都左边位置比右边位置小就循环（每循环一次“中位左数组的最左位，和中位右数组的最左位”都会+1）
+            if ((array[left] <= array[mid])){//判断“以待排数组的中间位置为界”，其左右两边数组哪一个是“最左元素小于等于最右元素”。”如果是“中位左数组”的最左元素小于等于最右元素则：
+                tmpArr[index++] = array[left++];//“中位左数组”的最左位+1，临时数组索引位也+1，并等于“中位左数组”的最左位
+            }else {
+                tmpArr[index++] = array[mid++];//“中位右数组”的最左位+1，临时数组索引位也+1，并等于“中位右数组”的最左位
+            }
+        }
+        // 剩余部分依次放入临时数组
+        while (mid <= right) {
+            tmpArr[index++] = array[mid++];
+        }
+        while (left <= center) {
+            tmpArr[index++] = array[left++];
+        }
+        // 将临时数组中的内容复制回原数组
+        for (int i = tmp; i <= right; i++) {
+            array[i] = tmpArr[i];
+        }
     }
 
     /**
