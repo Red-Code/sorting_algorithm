@@ -200,54 +200,57 @@ public class Sorting {
      * 时间复杂度：平均O(nlogn)，最坏O(nlogn)
      * 稳定性：稳定
      * @param array 待排数组
-     * @param left
-     * @param right
+     * @param left 待排数组的左边起始位
+     * @param right 待排数组的右边结束位
      */
     public void mergingSort(int[] array, int left, int right){
-        if (left >= right)
-            return;
-
-        //第一次，将整个数组传入，以中间位为界，第一个mergingSort()用来“划分”并排序中间位左边，第二个mergingSort()用来“划分”并排序中间位右边
-        //其中间位的左边序列又会重复这个过程，即先划分出其中的左右序列，然后它的左右序列又划分自己的左右序列·····（中间位右边序列同理）
-        //一直划分到左边为“left至left+1”，右边为“left+1只left+1”（如被划分的最小序列：左边是“0,1”，右边是“1”,又或者：左边是“3,4”，右边是“4”）
-        int center = (left + right)/2;//找到序列的中间位置
-        System.out.println("左当前left："+left+",左当前right:"+right);
-        mergingSort(array, left, center);//以center为界，将left
-        int aa = center + 1;
-        System.out.println("右当前left："+aa+",右当前right:"+right);
-        mergingSort(array, center + 1, right);
-        merge(array, left, center, right);
+        if (left<right){
+            int center = (left + right)/2;//找到传入数组的中间位
+            mergingSort(array, left, center);//将中间位作为“左边边界”递归，这样就能不断二分左边数组
+            mergingSort(array, center + 1, right);//找到和左边数组对应的右边部分
+            merge(array, left, center, right);//根据相关数据可以确定需要排序的范围，进行排序
+        }
     }
+
     /**
+     * 相当于有三个数组：leftPos到leftEnd组成了一个待排数组，rightPos到rightEnd组成了第二个待排数组。还有一个空的数组用来临时存储结果
+     * 每次将两个待排数组的最靠前项相比较，将其中最小的一项放入空数组中，然后该最小项所在数组的靠前下标+1
+     * 即有a[],b[]两个数组比较，先比较a[0],b[0]，发现a[0]小，就将a[0]放入result[],再比较a[1]和b[0]············
+     * 其中两个待排数组自身肯定是有序的（因为他们也是经过现有步骤排出来的）
+     * 当其中某个待排数组排完后，就表示“另一个待排数组的剩余项肯定大于之前所有的排序项”，又因为剩余项是有序的，
+     * 所以可以将剩余项全部按序装入临时结果数组。
+     * 之后用结果数组覆盖掉原数组
      *
      * @param array 待排数组
-     * @param left
-     * @param center
-     * @param right
+     * @param leftPos 待排数组的左边部分的起始位
+     * @param leftEnd 待排数组左边部分的结束位
+     * @param rightEnd 待排数组右边部分的结束位
      */
-    private void merge(int[] array, int left, int center, int right) {
-        int[] tmpArr = new int[right+1];//临时数组,长度为为“0至需要排序的字段”的长度
-        int mid = center + 1;
-        int index = left; // index记录临时数组的索引
-        int tmp = left;//排序的起始位置
+    private void merge(int[] array, int leftPos, int leftEnd, int rightEnd) {
+        int[] tmpArr = new int[rightEnd+1];//临时的结果数组，将排序后的结果存放其中
+        int rightPos = leftEnd + 1;//位于右边的待排数组开始位
+        int tmpPos = leftPos; //临时数组的存储位，每存一个，就后移一位
+        int tmp = leftPos;//排序的起始位置
 
         // 从两个数组中取出最小的放入临时数组
-        while (left <= center && mid <= right) {//“以待排数组的中间位置为界”，两边的待排数组如果都左边位置比右边位置小就循环（每循环一次“中位左数组的最左位，和中位右数组的最左位”都会+1）
-            if ((array[left] <= array[mid])){//判断“以待排数组的中间位置为界”，其左右两边数组哪一个是“最左元素小于等于最右元素”。”如果是“中位左数组”的最左元素小于等于最右元素则：
-                tmpArr[index++] = array[left++];//“中位左数组”的最左位+1，临时数组索引位也+1，并等于“中位左数组”的最左位
+        while (leftPos <= leftEnd && rightPos <= rightEnd) {
+            if ((array[leftPos] <= array[rightPos])){
+                tmpArr[tmpPos++] = array[leftPos++];
             }else {
-                tmpArr[index++] = array[mid++];//“中位右数组”的最左位+1，临时数组索引位也+1，并等于“中位右数组”的最左位
+                tmpArr[tmpPos++] = array[rightPos++];
             }
         }
-        // 剩余部分依次放入临时数组
-        while (mid <= right) {
-            tmpArr[index++] = array[mid++];
+
+        //此时肯定有一个待排数组已经排完了，现在查找那个数组排完了，并将另一个数组的剩余部分装入临时数组
+        while (rightPos <= rightEnd) {
+            tmpArr[tmpPos++] = array[rightPos++];
         }
-        while (left <= center) {
-            tmpArr[index++] = array[left++];
+        while (leftPos <= leftEnd) {
+            tmpArr[tmpPos++] = array[leftPos++];
         }
+
         // 将临时数组中的内容复制回原数组
-        for (int i = tmp; i <= right; i++) {
+        for (int i = tmp; i <= rightEnd; i++) {
             array[i] = tmpArr[i];
         }
     }
