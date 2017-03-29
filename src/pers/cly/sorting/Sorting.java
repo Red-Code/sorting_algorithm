@@ -37,14 +37,14 @@ public class Sorting {
     public void shellSort(int[] array,int incrementNum){
         for (int increment = incrementNum; increment > 0; increment /= 2) {//从初始增量开始循环，每次增量减少一倍
             //下面就是一个修改过的直接插入排序
-            for (int i = increment; i < array.length; i++) {//取arr[0]作为初始的顺序序列，从arr[1]开始和顺序序列进行比较。
-                if(array[i] < array[i-increment]){//每次先与当前顺序序列的最大的数比，如果比他小则表示需要插入。如果比当前顺序序列里的最大数还要大，则不必插入，直接进行下一次循环。
-                    int temp = array[i];//先将待插数存入temp
+            for (int i = increment; i < array.length; i++) {
+                if(array[i] < array[i-increment]){
+                    int temp = array[i];
                     int j;
-                    for(j = i-increment; j >= 0 && array[j] > temp; j -=increment){//待插数据的前一个数其实就是当前顺序序列的最大数，所以先和前一个数比，如果比最大数小，则最大数后移一位，然后继续比。
-                        array[j+increment] = array[j];//把比temp大或相等的元素全部往后移动一个位置
+                    for(j = i-increment; j >= 0 && array[j] > temp; j -=increment){
+                        array[j+increment] = array[j];
                     }
-                    array[j+increment] = temp;//把待排序的元素temp插入腾出位置的(j+1)
+                    array[j+increment] = temp;
                 }
             }
         }
@@ -213,7 +213,7 @@ public class Sorting {
     }
 
     /**
-     * 相当于有三个数组：leftPos到leftEnd组成了一个待排数组，rightPos到rightEnd组成了第二个待排数组。还有一个空的数组用来临时存储结果
+     * 相当于有三个数组：leftPos到leftEnd组成了第一个待排数组，rightPos到rightEnd组成了第二个待排数组。还有一个空的数组用来临时存储结果
      * 每次将两个待排数组的最靠前项相比较，将其中最小的一项放入空数组中，然后该最小项所在数组的靠前下标+1
      * 即有a[],b[]两个数组比较，先比较a[0],b[0]，发现a[0]小，就将a[0]放入result[],再比较a[1]和b[0]············
      * 其中两个待排数组自身肯定是有序的（因为他们也是经过现有步骤排出来的）
@@ -257,14 +257,90 @@ public class Sorting {
 
     /**
      * 名称：基数排序
-     * 描述：
+     * 描述：在描述基数排序前先描述一下“桶排序”：
+     *      桶排序：
+     *      假设待排数组{A1，A1，A3·····}中所有的数都小于“M”，则建立一个长度为M的数组count[M]，初始化为全0。
+     *      当读取A1时，将count[A1]增1（初始为0，现在为1），当读取A2时，将count[A2]增1·····
+     *      之后count[M]中的每一个非0项的顺序就是排序结果。
+     *      基数排序：
+     *      对于数组中的所有项的“每一位数”都进行桶排序。
+     *      比如先对所有项的“个位”进行桶排序，根据个位的桶排序的结果，对各个项进行一次排序。
+     *      之后再对十位进行桶排序··········
      * 时间复杂度（d代表长度，n代表关键字个数，r代表关键字的基数）：平均O(d(n+rd))，最坏O(d(n+rd))
-     * 稳定性：稳定
      * @param array 待排数组
+     * @param len_max 待排数组中项的最高位位数（如待排数组={2,23,233,2333}，那么len_max为4（2333的位数））
+     * 稳定性：稳定
      */
-    public void radixSort(int[] array){
+    public void radixSort(int[] array,int len_max){
+        /**
+         * 一般的桶排序的count[]只是一维数组，里面的每项（0-9）的具体值代表了该数出现的次数，如count[2]=3，代表2这个“项”，出现了3次。
+         * 但现在是“从个位开始”，每一位都要做桶排序。如果还是使用count[]，那么count[2]=3只能代表“在所有项的第n位桶排序中”2这个数“作为第n位数”出现了3次。
+         * 显然，正常的流程是：
+         *                  先查找“个位”的count[0]=n，将这些“个位为0”的数从第0位开始放入数组。再看“个位”的count[1]=m，将这些“个位为1”的数紧挨着刚刚插入的数插进来。·····
+         *                  “个位”的第一轮排序完后，原数组相当于“依据个位大小，进行了一次排序”，接下来就要“依据十位大小再进行一次排序了”····。
+         * 综上流程能够发现，第n位中count[2]=3，这个2代表了“3个n位为2的数”，我们要排序就必须知道“这3个数具体是什么”，然后把这些数按序放入原数组。
+         * 所以引入二维数组count[][]，
+         * 第一维的下标代表了该位数“具体是几”，所以范围是0-9。
+         * 第二维的下标代表了该位数相同的值“第几次出现”，如个位桶排序时，count[2][34]就代表了第34个“个位为2的数”。
+         * 第二维中存储的是具体的某个数
+         */
+        int[][] count = new int[10][array.length];
 
+        //该数组frequency[n]=m，用来计算“某位的桶排序”中“n这个数第m次出现”。
+        // 所以n的范围只能是0-9，而m最多可能是原数组的长度（当该数组某一位的值都是同一个数时）
+        int[] frequency = new int[10];
+
+        int now_digit = 1;//当前排序的是各项的第几位数（从第一位（个位）开始排）
+        int n = 1;//用来计算当前位的具体值
+
+        //从个位开始排，然后再排十位·····
+        while (now_digit<=len_max){
+            //根据原数组中各项的“now_digit位”，进行桶排序。
+            for (int i=0;i<array.length;i++){
+                int digit = ((array[i] / n) % 10);//找到具体某位的值。如n=1时，找到的就是个位的值。n=10时，找到的就是十位的值
+                count[digit][frequency[digit]]=array[i];
+                frequency[digit]++;
+            }
+
+            /**
+             * 现在所有的项已经根据桶排序规则存入count[][]中，现在需要按序再存回原数组。思路如下：
+             * count[][]中第一个下标意味着“当前位”的具体值，为0-9.
+             * 所以应该将count[0][n]中的各个数排在前面，count[1][m]中的各项跟在后面·····
+             * count[0][]中存了多个“当前位为0的数”，而count[][]的第二个下标表示“被存储的数”是“第几个下标为0的数”。
+             * 如:当前位为“个位”排序时，count[0][1]=21表示21是第一个“个位为0的数”，count[0][6]=341表示341是第6个“个位为0的数”
+             */
+            int k = 0;//把数据存在原数组的什么位置（起始的存储位置自然是0，然后每存一个数后移一位）
+            for(int i = 0; i < 10; i++) {//从count[i=0][]开始找，然后找count[i++][]····
+                if(frequency[i] != 0){//frequency[i]代表了“i这个数第几次出现”，所以为0就表示没出现过，也就不用排了
+                    for(int j = 0; j < frequency[i]; j++) {//从第0次出现开始找，每次都装入原数组
+                        array[k] = count[i][j];//j代表了“位值为i”的数是第几个，count[i][j]代表了该数
+                        k++;
+                    }
+                }
+                frequency[i] = 0;//“当前位数”为i的数已经存完，需要初始化，否则下一“位数为i”的数存时会出错。
+            }
+            n *= 10;//每循一次，用来计算当前位的具体值的n做+10处理
+            now_digit++;//每循一次，当前位数+1
+        }
     }
 
+    //一个简单的桶排序
+    private void bucketSort(){
+        int[] array_demo = {2,5,7,3,1,6,8,4,2,1,3,7,9,4,2,5,0};
+        int[] count = new int[10];
+        int m=0;
 
+        for (int i:array_demo){
+            count[i]++;
+        }
+
+        for (int i=0;i<10;i++){
+            if (count[i]!=0){
+                for (int k=0;k<count[i];k++){
+                    array_demo[m] = i;
+                    m++;
+                }
+            }
+        }
+    }
 }

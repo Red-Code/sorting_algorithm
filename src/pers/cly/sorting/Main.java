@@ -42,6 +42,11 @@ public class Main {
         int[] param_mergingSort= {6,2,8,5,324,23423,56,2,87,3,42,436};
         sorting_util.mergingSort(param_mergingSort, 0, param_mergingSort.length-1);
         printResult("归并排序：",param_mergingSort);
+
+        //基数排序
+        int[] param_radixSort= {6,2,8,5,324,23423,56,2,87,3,42,436};
+        sorting_util.radixSort(param_radixSort,5);
+        printResult("基数排序：",param_radixSort);
     }
 
     /**
