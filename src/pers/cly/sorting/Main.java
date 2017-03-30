@@ -47,6 +47,53 @@ public class Main {
         int[] param_radixSort= {6,2,8,5,324,23423,56,2,87,3,42,436};
         sorting_util.radixSort(param_radixSort,5);
         printResult("基数排序：",param_radixSort);
+
+        //测试在不同情况下各个算法的速度
+        SpeedTest.test();
+        /**
+         * 测试结果：
+         （1）
+         随机数范围：0-100
+         随机数数量：100
+         结果：
+         8种算法速度均在0ms左右，没有显著差别。
+
+         （2）
+         随机数范围：0-1000
+         随机数数量：1000
+         结果：
+         希尔排序、快速排序、堆排序、基数排序：0ms左右
+         直接插入排序、冒泡排序、直接选择排序、归并排序：1ms-10ms
+
+         （3）
+         随机数范围：0-10000
+         随机数数量：10000
+         结果：
+         希尔排序、快速排序、堆排序、基数排序：0ms-10ms
+         直接插入排序：10ms-20ms
+         直接选择排序、归并排序：50ms左右
+         冒泡排序：150ms左右
+
+         （4）
+         随机数范围：0-100000
+         随机数数量：100000
+         结果：
+         希尔排序、快速排序、堆排序、基数排序：10ms-20ms
+         直接插入排序：1100ms左右
+         归并排序：2000ms左右
+         直接选择排序：5000ms左右
+         冒泡排序：14500ms左右
+
+         （5）
+         随机数范围：0-10000000
+         随机数数量：10000000
+         结果：
+         基数排序：690ms左右
+         快速排序：1300ms左右
+         希尔排序：2600ms左右
+         堆排序：2900ms左右
+         直接插入排序、冒泡排序、直接选择排序、归并排序：速度过慢。
+         */
     }
 
     /**
@@ -54,7 +101,7 @@ public class Main {
      * @param sort_type 用来描述排序方法
      * @param array_result 排序结果数组
      */
-    public static void printResult(String sort_type,int[] array_result){
+    private static void printResult(String sort_type,int[] array_result){
         System.out.print(sort_type);
         for (int i:array_result){
             System.out.print(i+",");
