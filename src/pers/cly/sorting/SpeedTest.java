@@ -68,10 +68,10 @@ public class SpeedTest {
         long endTime14 = System.currentTimeMillis();
         System.out.println("直接插入排序，100000个数，运行时间："+(endTime14-startTime14)+"ms");
 
-        long startTime15 = System.currentTimeMillis();//获取当前时间
-        sorting_util.straightInsertionSort(array_ten_million);
-        long endTime15 = System.currentTimeMillis();
-        System.out.println("直接插入排序，10000000个数，运行时间："+(endTime15-startTime15)+"ms");
+//        long startTime15 = System.currentTimeMillis();//获取当前时间
+//        sorting_util.straightInsertionSort(array_ten_million);
+//        long endTime15 = System.currentTimeMillis();
+//        System.out.println("直接插入排序，10000000个数，运行时间："+(endTime15-startTime15)+"ms");
     }
 
     //希尔排序
@@ -180,10 +180,10 @@ public class SpeedTest {
         long endTime34 = System.currentTimeMillis();
         System.out.println("冒泡排序，100000个数，运行时间："+(endTime34-startTime34)+"ms");
 
-        long startTime35 = System.currentTimeMillis();//获取当前时间
-        sorting_util.bubbleSort(array_ten_million);
-        long endTime35 = System.currentTimeMillis();
-        System.out.println("冒泡排序，10000000个数，运行时间："+(endTime35-startTime35)+"ms");
+//        long startTime35 = System.currentTimeMillis();//获取当前时间
+//        sorting_util.bubbleSort(array_ten_million);
+//        long endTime35 = System.currentTimeMillis();
+//        System.out.println("冒泡排序，10000000个数，运行时间："+(endTime35-startTime35)+"ms");
     }
 
     //快速排序
@@ -292,10 +292,10 @@ public class SpeedTest {
         long endTime54 = System.currentTimeMillis();
         System.out.println("直接选择排序，100000个数，运行时间："+(endTime54-startTime54)+"ms");
 
-        long startTime55 = System.currentTimeMillis();//获取当前时间
-        sorting_util.selectionSort(array_ten_million);
-        long endTime55 = System.currentTimeMillis();
-        System.out.println("直接选择排序，10000000个数，运行时间："+(endTime55-startTime55)+"ms");
+//        long startTime55 = System.currentTimeMillis();//获取当前时间
+//        sorting_util.selectionSort(array_ten_million);
+//        long endTime55 = System.currentTimeMillis();
+//        System.out.println("直接选择排序，10000000个数，运行时间："+(endTime55-startTime55)+"ms");
     }
 
     //堆排序
@@ -404,10 +404,10 @@ public class SpeedTest {
         long endTime74 = System.currentTimeMillis();
         System.out.println("归并排序，100000个数，运行时间："+(endTime74-startTime74)+"ms");
 
-        long startTime75 = System.currentTimeMillis();//获取当前时间
-        sorting_util.mergingSort(array_ten_million, 0, array_ten_million.length-1);
-        long endTime75 = System.currentTimeMillis();
-        System.out.println("归并排序，10000000个数，运行时间："+(endTime75-startTime75)+"ms");
+//        long startTime75 = System.currentTimeMillis();//获取当前时间
+//        sorting_util.mergingSort(array_ten_million, 0, array_ten_million.length-1);
+//        long endTime75 = System.currentTimeMillis();
+//        System.out.println("归并排序，10000000个数，运行时间："+(endTime75-startTime75)+"ms");
     }
 
     //基数排序
